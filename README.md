@@ -83,7 +83,7 @@ La PWA solo será instalable desde GitHub Pages cuando el sitio esté servido po
 - En `Agenda`, cambia el estado de cada charla y abre su panel de notas.
 - En `Checklist`, marca preparación general y pasos del CTF.
 - En `CTF`, crea un registro por reto con comandos, hallazgos, hipótesis, pistas y aprendizaje.
-- En `Exportar`, descarga tus notas completas en Markdown para Joplin/GitHub o en JSON para respaldo.
+- En `Exportar`, descarga tus notas completas en Markdown para Joplin/GitHub o en JSON para respaldo, y restaura backups JSON cuando cambies de navegador o dispositivo.
 
 ## Persistencia
 

@@ -107,6 +107,39 @@ function normalizeChallenges(value: unknown): CtfChallenge[] {
   }));
 }
 
+export function normalizeAppData(value: unknown): AppData {
+  if (!isRecord(value)) {
+    return copyInitialData();
+  }
+
+  return {
+    talkStatuses: { ...initialData.talkStatuses, ...normalizeStatuses(value.talkStatuses) },
+    talkPriorities: { ...initialData.talkPriorities, ...normalizePriorities(value.talkPriorities) },
+    talkNotes: normalizeNotes(value.talkNotes),
+    checklist: {
+      event: normalizeChecklist(isRecord(value.checklist) ? value.checklist.event : undefined, initialData.checklist.event),
+      ctf: normalizeChecklist(isRecord(value.checklist) ? value.checklist.ctf : undefined, initialData.checklist.ctf),
+    },
+    ctfChallenges: normalizeChallenges(value.ctfChallenges),
+  };
+}
+
+export function parseAppDataBackup(value: unknown): AppData | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (isRecord(value.data)) {
+    return normalizeAppData(value.data);
+  }
+
+  if ("talkStatuses" in value || "talkNotes" in value || "checklist" in value || "ctfChallenges" in value) {
+    return normalizeAppData(value);
+  }
+
+  return null;
+}
+
 export function loadAppData(): AppData {
   let raw: string | null = null;
 
@@ -122,21 +155,7 @@ export function loadAppData(): AppData {
 
   try {
     const parsed: unknown = JSON.parse(raw);
-
-    if (!isRecord(parsed)) {
-      return copyInitialData();
-    }
-
-    return {
-      talkStatuses: { ...initialData.talkStatuses, ...normalizeStatuses(parsed.talkStatuses) },
-      talkPriorities: { ...initialData.talkPriorities, ...normalizePriorities(parsed.talkPriorities) },
-      talkNotes: normalizeNotes(parsed.talkNotes),
-      checklist: {
-        event: normalizeChecklist(isRecord(parsed.checklist) ? parsed.checklist.event : undefined, initialData.checklist.event),
-        ctf: normalizeChecklist(isRecord(parsed.checklist) ? parsed.checklist.ctf : undefined, initialData.checklist.ctf),
-      },
-      ctfChallenges: normalizeChallenges(parsed.ctfChallenges),
-    };
+    return normalizeAppData(parsed);
   } catch {
     return copyInitialData();
   }

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import type { ChangeEvent } from "react";
 import { emptyNotes, talks } from "./data";
 import { createJsonExport, createMarkdownExport, createNotesOnlyExport, createTalkNotesExport, downloadText } from "./exporters";
-import { loadAppData, saveAppData } from "./storage";
+import { loadAppData, parseAppDataBackup, saveAppData } from "./storage";
 import type { AppData, CtfChallenge, Priority, TabId, Talk, TalkNotes, TalkStatus } from "./types";
 
 const tabs: { id: TabId; label: string; hint: string }[] = [
@@ -194,7 +195,7 @@ function App() {
         {activeTab === "ctf" && (
           <CtfView data={data} onSave={saveChallenge} onDelete={deleteChallenge} />
         )}
-        {activeTab === "export" && <ExportView data={data} />}
+        {activeTab === "export" && <ExportView data={data} onImport={setData} />}
       </main>
 
       <footer className="status-bar" aria-label="Estado local">
@@ -761,10 +762,38 @@ function CtfView({
   );
 }
 
-function ExportView({ data }: { data: AppData }) {
+function ExportView({ data, onImport }: { data: AppData; onImport: (data: AppData) => void }) {
+  const [importStatus, setImportStatus] = useState("");
+
+  async function importBackup(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const parsed: unknown = JSON.parse(text);
+      const importedData = parseAppDataBackup(parsed);
+
+      if (!importedData) {
+        setImportStatus("No se importó nada: el archivo no parece un backup JSON de Summit Companion.");
+        return;
+      }
+
+      onImport(importedData);
+      setImportStatus("Backup importado. Agenda, notas, checklist y CTF fueron reemplazados.");
+    } catch {
+      setImportStatus("No se importó nada: el JSON está corrupto o no se pudo leer.");
+    } finally {
+      event.target.value = "";
+    }
+  }
+
   return (
     <section className="card export-panel">
-      <SectionHeader title="Exportar" text="Descarga una copia local de agenda, notas, checklist y CTF." />
+      <SectionHeader title="Exportar / importar" text="Descarga o restaura una copia local de agenda, notas, checklist y CTF." />
       <div className="actions">
         <button
           type="button"
@@ -786,6 +815,23 @@ function ExportView({ data }: { data: AppData }) {
         >
           Exportar JSON
         </button>
+      </div>
+      <div className="import-panel">
+        <div>
+          <strong>Importar backup JSON</strong>
+          <p>Restaura un archivo exportado desde esta app. La importación reemplaza los datos actuales.</p>
+        </div>
+        <label className="file-import-label" htmlFor="backup-import">
+          Seleccionar JSON
+        </label>
+        <input
+          accept="application/json,.json"
+          className="file-input"
+          id="backup-import"
+          type="file"
+          onChange={importBackup}
+        />
+        {importStatus && <p className="import-status" role="status">{importStatus}</p>}
       </div>
     </section>
   );
