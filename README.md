@@ -37,7 +37,7 @@ npm run build
 npm run preview
 ```
 
-Abre la URL local que muestre Vite. En Chrome/Edge puedes revisar `Application > Manifest` y `Application > Service Workers` en DevTools. La instalación suele aparecer en la barra de dirección o en el menú del navegador. En móvil, abre la URL por HTTPS y usa la opción de instalar/agregar a pantalla de inicio.
+Abre la URL local que muestre Vite. Si pruebas el build con la misma base de GitHub Pages, entra a `/summit-companion/`. En Chrome/Edge puedes revisar `Application > Manifest` y `Application > Service Workers` en DevTools. La instalación suele aparecer en la barra de dirección o en el menú del navegador. En móvil, abre la URL por HTTPS y usa la opción de instalar/agregar a pantalla de inicio.
 
 Notas:
 
@@ -51,23 +51,29 @@ Puedes publicar el contenido de `dist/` en cualquier hosting estático, por ejem
 
 ### GitHub Pages
 
-El proyecto usa `base: "./"` en Vite para que los assets funcionen bajo la ruta del repositorio, por ejemplo:
+El proyecto usa `base: "/summit-companion/"` en Vite para que los assets funcionen bajo la ruta del repositorio:
 
 ```text
 https://fs-kev-sandbox.github.io/summit-companion/
 ```
 
-Flujo manual:
+El workflow `.github/workflows/deploy.yml` construye la app con `npm ci` y `npm run build`, sube `dist/` como artifact de Pages y publica el sitio automáticamente cuando hay push a `main`.
+
+Para activar GitHub Pages en el repositorio:
+
+1. Entra a `Settings > Pages`.
+2. En `Build and deployment`, cambia `Source` a `GitHub Actions`.
+3. Guarda la configuración si GitHub lo solicita.
+4. Haz push a `main`.
+5. Revisa `Actions > Deploy to GitHub Pages` hasta que termine correctamente.
+
+También puedes lanzar el despliegue manualmente desde `Actions > Deploy to GitHub Pages > Run workflow`.
+
+Antes de desplegar localmente puedes validar:
 
 ```bash
 npm run build
 ```
-
-Luego publica el contenido de `dist/` en GitHub Pages. En el repositorio puedes usar `Settings > Pages` y elegir la fuente que prefieras:
-
-- GitHub Actions, subiendo `dist/` como artifact;
-- una rama dedicada como `gh-pages`;
-- o cualquier flujo estático equivalente.
 
 La PWA solo será instalable desde GitHub Pages cuando el sitio esté servido por HTTPS y el navegador haya cargado correctamente `manifest.webmanifest` y `sw.js`.
 
