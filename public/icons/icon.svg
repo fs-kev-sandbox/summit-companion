@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Summit Companion">
+  <rect width="512" height="512" rx="96" fill="#071018"/>
+  <path d="M156 140 256 82l100 58v116l-100 58-100-58z" fill="none" stroke="#42d9ff" stroke-width="30" stroke-linejoin="round"/>
+  <path d="M156 140 256 198l100-58M256 198v116" fill="none" stroke="#42d9ff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+  <path d="M132 382h248M164 424h184" stroke="#6bd38d" stroke-width="28" stroke-linecap="round"/>
+</svg>

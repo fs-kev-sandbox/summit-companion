@@ -1,0 +1,26 @@
+{
+  "name": "Summit Companion",
+  "short_name": "Summit",
+  "description": "Agenda, notas, checklist y CTF offline para openSUSE America Summit Barranquilla 2026.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#071018",
+  "theme_color": "#42d9ff",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/maskable-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
