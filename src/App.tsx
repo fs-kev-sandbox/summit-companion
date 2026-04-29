@@ -175,7 +175,7 @@ function App() {
 
       <main>
         {activeTab === "today" && (
-          <TodayView data={data} onStatusChange={updateStatus} onPriorityChange={updatePriority} />
+          <RouteView data={data} onStatusChange={updateStatus} onPriorityChange={updatePriority} />
         )}
         {activeTab === "agenda" && (
           <AgendaView
@@ -332,7 +332,7 @@ function PriorityControl({
   );
 }
 
-function TodayView({
+function RouteView({
   data,
   onStatusChange,
   onPriorityChange,
@@ -348,7 +348,7 @@ function TodayView({
     .filter((talk) => getTalkStatus(data, talk) !== "descartada")
     .slice(0, 6);
   const selectedTalks = dayTalks
-    .filter((talk) => getTalkStatus(data, talk) === "quiero asistir")
+    .filter((talk) => getTalkStatus(data, talk) === "quiero asistir");
   const activeDayMeta = eventDays.find((day) => day.id === activeDay) ?? eventDays[0];
   const checklistItems = [...data.checklist.event, ...data.checklist.ctf];
   const checkedItems = checklistItems.filter((item) => item.checked).length;

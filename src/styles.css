@@ -1571,3 +1571,75 @@ textarea {
     grid-template-columns: 340px minmax(0, 1fr);
   }
 }
+
+@media (max-width: 719px) {
+  body {
+    min-width: 0;
+  }
+
+  .app-shell {
+    width: 100%;
+    min-height: 100dvh;
+    margin: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .app-header {
+    padding: 0.9rem;
+  }
+
+  .briefing-card {
+    text-align: left;
+    padding: 0.75rem;
+  }
+
+  .tabs {
+    grid-template-columns: repeat(6, minmax(7rem, 1fr));
+    overflow-x: auto;
+    padding: 0.55rem 0.9rem;
+    scrollbar-color: rgba(66, 217, 255, 0.42) transparent;
+  }
+
+  .tab {
+    min-width: 7rem;
+  }
+
+  main {
+    padding: 0.9rem;
+  }
+
+  .day-switch,
+  .signal-grid,
+  .ctf-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .day-tab {
+    min-height: 48px;
+  }
+
+  .section-header {
+    display: grid;
+  }
+
+  .status-row,
+  .actions,
+  .ctf-actions {
+    display: grid;
+  }
+
+  .status-chip {
+    flex-basis: auto;
+  }
+
+  .note-row,
+  .route-stop {
+    grid-template-columns: 1fr;
+  }
+
+  .note-row small,
+  .route-stop small {
+    grid-column: auto;
+  }
+}

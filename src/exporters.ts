@@ -5,6 +5,16 @@ function line(value: string) {
   return value.trim() || "_Sin registrar_";
 }
 
+function codeBlock(value: string, language = "") {
+  const content = value.trim();
+
+  if (!content) {
+    return "_Sin registrar_";
+  }
+
+  return ["```" + language, content, "```"].join("\n");
+}
+
 function checklistMarkdown(title: string, items: ChecklistItem[]) {
   return [`## ${title}`, "", ...items.map((item) => `- [${item.checked ? "x" : " "}] ${item.label}`), ""].join("\n");
 }
@@ -23,6 +33,16 @@ function talkDayLabel(talk: Talk) {
   }
 
   return "CTF / Laboratorio transversal";
+}
+
+function talksByDay(sourceTalks: Talk[]) {
+  const sections = [
+    { title: "Dia 1 / Sede Centro", talks: sourceTalks.filter((talk) => talk.venue === "Sede Centro") },
+    { title: "Dia 2 / Sede Norte", talks: sourceTalks.filter((talk) => talk.venue === "Sede Norte") },
+    { title: "CTF / Laboratorio transversal", talks: sourceTalks.filter((talk) => talk.venue === "CTF") },
+  ];
+
+  return sections.filter((section) => section.talks.length > 0);
 }
 
 function talkMarkdown(talk: Talk, data: AppData) {
@@ -71,9 +91,7 @@ function ctfMarkdown(challenge: CtfChallenge) {
     "",
     "**Comandos usados:**",
     "",
-    "```bash",
-    challenge.commands.trim(),
-    "```",
+    codeBlock(challenge.commands, "bash"),
     "",
     `**Hallazgos:** ${line(challenge.findings)}`,
     "",
@@ -96,7 +114,11 @@ export function createMarkdownExport(data: AppData) {
     "",
     "# Agenda y notas",
     "",
-    ...talks.map((talk) => talkMarkdown(talk, data)),
+    ...talksByDay(talks).flatMap((section) => [
+      `## ${section.title}`,
+      "",
+      ...section.talks.map((talk) => talkMarkdown(talk, data)),
+    ]),
     "# Checklist",
     "",
     checklistMarkdown("General del evento", data.checklist.event),
@@ -122,7 +144,9 @@ export function createNotesOnlyExport(data: AppData) {
     `Exportado: ${new Date().toLocaleString("es-CO")}`,
     "",
     talksWithNotes.length
-      ? talksWithNotes.map((talk) => talkMarkdown(talk, data)).join("\n")
+      ? talksByDay(talksWithNotes)
+          .flatMap((section) => [`## ${section.title}`, "", ...section.talks.map((talk) => talkMarkdown(talk, data))])
+          .join("\n")
       : "_Todavia no hay notas registradas._\n",
   ].join("\n");
 }
